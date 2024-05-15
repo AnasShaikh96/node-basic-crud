@@ -1,4 +1,4 @@
-const { DataTypes } = require('sequelize')
+const { DataTypes, where } = require('sequelize')
 
 const UserModel = {
   id: {
@@ -36,6 +36,9 @@ module.exports = {
     return this.model.findOne({ where: query })
   },
   findAllUsers: (query) => {
-    return this.model.findAll({ where: query })
+    return this.model.findAll()
+  },
+  updateUser: (query, updatedValue) => {
+    return this.model.update(updatedValue, { where: query })
   }
 }

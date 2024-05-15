@@ -22,21 +22,16 @@ module.exports = {
   register: async (req, res) => {
 
     try {
-
-
       const { name, email, password, role } = req.body;
 
-
       let encryptedPassword = encryptPassword(password);
-      console.log(encryptedPassword)
 
       let getRole = role;
       if (!getRole) {
         getRole = 'user'
-
       }
 
-      const user = await UserModel.createUser({ name, email, ...{ password: encryptedPassword },getRole });
+      const user = await UserModel.createUser({ name, email, ...{ password: encryptedPassword }, getRole });
 
       let accessToken = generateAccessToken(name, user.id)
 
@@ -63,12 +58,50 @@ module.exports = {
   },
   login: async (req, res) => {
 
-    const { email, password } = req.body;
+    try {
 
-    const user = await UserModel.findUser({ email })
+      const { email, password } = req.body;
 
-    // console.log(user)
-    res.status(200).json(user)
+      let encryptedPassword = encryptPassword(password);
+
+      const user = await UserModel.findUser({ email })
+
+      if (!user) {
+        res.status(404).json({
+          status: false,
+          error: {
+            message: `User with email: ${email} does not exists!`
+          }
+        })
+      }
+
+      if (user.password !== encryptedPassword) {
+        res.status(400).json({
+          status: false,
+          error: {
+            message: `Provided Email and password does not match!`
+          }
+        })
+      }
+
+      const accessToken = generateAccessToken(email, user.id)
+
+      res.status(200).json({
+        status: true,
+        data: user,
+        token: accessToken
+      });
+
+    } catch (error) {
+
+      res.status(500).json({
+        status: false,
+        error
+      })
+
+    }
+
+
 
   }
 }
