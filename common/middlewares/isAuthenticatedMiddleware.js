@@ -35,14 +35,15 @@ module.exports = {
           res.status(400).json({
             status: false,
             error: {
-              message: 'Invalid token.'
+              message: 'Your token is either Invalid or Expired.'
             }
           })
+        } else {
+          req.user = user;
+          next()
         }
-        req.user = user;
       })
 
-      next()
     } catch (error) {
 
       res.status(500).json({

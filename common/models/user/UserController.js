@@ -26,19 +26,16 @@ module.exports = {
 
       const allUsers = await UserModel.findAllUsers();
 
-      res.status(200).json(allUsers)
-
-    } catch (error) {
-
-
-      res.status(404).json({
-        status: false,
-        error: {
-          message: 'Some error occured'
-        }
+      res.status(200).json({
+        status: true,
+        data: allUsers
       })
 
-
+    } catch (error) {
+      res.status(500).json({
+        status: false,
+        error
+      })
     }
   },
   patchUser: async (req, res) => {
@@ -60,10 +57,11 @@ module.exports = {
       }
 
       const user = await UserModel.updateUser({ id: userId }, payload)
+      const getUser = await UserModel.getOneUser(user.id)
 
       res.status(200).json({
         status: true,
-        data: user
+        data: getUser
       })
 
     } catch (error) {
