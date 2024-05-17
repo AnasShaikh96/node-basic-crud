@@ -6,8 +6,6 @@ const cors = require("cors");
 
 const UserRoutes = require('./common/models/user/UserRoutes');
 const AuthorizationRoutes = require('./authorization/routes/AuthorizationRoutes')
-// const UserController = require('./common/models/user/UserController');
-// const router = express.Router();
 const UserModel = require('./common/models/user/UserModel')
 
 app.use(morgan('tiny'))
@@ -27,7 +25,6 @@ sequelize.sync().then(() => {
   console.log('Sequelize Initiated')
 
   app.use("/", AuthorizationRoutes)
-
   app.use("/user", UserRoutes)
 
   app.listen(3000, () => {
